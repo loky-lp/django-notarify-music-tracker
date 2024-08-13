@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>Accedi</title>
+    <title>Registrati</title>
     <style>
         * {
             box-sizing: border-box;
@@ -16,15 +16,6 @@
             font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
             font-feature-settings: normal;
             font-variation-settings: normal;
-        }
-
-        h1 {
-            margin: 0;
-            font-size: 1.5rem;
-        }
-
-        p {
-            margin: 0;
         }
 
         body {
@@ -46,6 +37,15 @@
             color: hsl(0 0% 3.9% / 1);
             padding: 1.5rem;
             gap: 1rem;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        p {
+            margin: 0;
         }
 
         .input {
@@ -103,11 +103,11 @@
 <body>
 
 <canvas id="canvas" width="600" height="600" style="width: 300px; height: 300px;"></canvas>
-<form action="{% url 'website:login' %}" method="post" id="login-form">
+<form action="{% url 'website:signup' %}" method="post" id="login-form">
     <div>
-        <h1>Accedi</h1>
+        <h1>Registrati</h1>
         <p>
-            Se invece vuoi registrarti puoi farlo <a href="/signup">qui</a>.
+            Inserisci un nome utente e una password che vuoi usare,<br>verrai automaticamente registrato.
         </p>
     </div>
     <div>
