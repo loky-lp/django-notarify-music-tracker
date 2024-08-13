@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Accedi</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            -webkit-text-size-adjust: 100%;
+            -webkit-tap-highlight-color: transparent;
+            font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-feature-settings: normal;
+            font-variation-settings: normal;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #000;
+        }
+
+        #login-form {
+            display: flex;
+            flex-direction: column;
+            border-style: solid;
+            border-radius: 0.5rem;
+            border-width: 1px;
+            background-color: hsl(0 0% 98% / 1);
+            color: hsl(0 0% 3.9% / 1);
+            padding: 1.5rem;
+            gap: 1rem;
+        }
+
+        .input {
+            border-style: solid;
+            font-family: inherit;
+            font-feature-settings: inherit;
+            font-variation-settings: inherit;
+            font-weight: inherit;
+            letter-spacing: inherit;
+            color: inherit;
+            display: flex;
+            height: 2.5rem;
+            width: 100%;
+            border-color: hsl(240 5.9% 90% / 1);
+            border-radius: calc(0.5rem - 2px);
+            border-width: 1px;
+            background-color: hsl(0 0% 98% / 1);
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+            margin: 0.5rem 0 0.5rem;
+        }
+
+        .button {
+            border-width: 0;
+            border-style: solid;
+            border-color: hsl(240 5.9% 90% / 1);
+            font-family: inherit;
+            font-feature-settings: inherit;
+            font-variation-settings: inherit;
+            letter-spacing: inherit;
+            margin: 0;
+            text-transform: none;
+            -webkit-appearance: button;
+            background-image: none;
+            cursor: pointer;
+            display: inline-flex;
+            height: 2.5rem;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            border-radius: calc(0.5rem - 2px);
+            background-color: hsl(240 5.9% 10% / 1);
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+            font-weight: 500;
+            color: hsl(0 0% 98% / 1);
+            transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="canvas" width="600" height="600" style="width: 300px; height: 300px;"></canvas>
+<form action="{% url 'website:login' %}" method="post" id="login-form">
+    <div>
+        <label for="username">Username</label>
+        <input type="text" name="username" id="username" class="input">
+    </div>
+    <div>
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" class="input">
+    </div>
+    <input type="submit" value="Accedi" class="button">
+</form>
+
+<script>
+    const canvas = document.getElementById('canvas')
+    const ctx = canvas.getContext('2d');
+    const width = 600;
+    const height = 600;
+    const elRadius = 1;
+    const cycleDuration = 5000
+    const maxRays = 200;
+    const raysFrequency = 0.2
+    const rays = [];
+
+    function lerp(start, end, fraction) {
+        return start + (end - start) * fraction;
+    }
+
+    function line(fromX, fromY, toX, toY) {
+        ctx.beginPath();
+        ctx.moveTo(fromX, fromY);
+        ctx.lineTo(toX, toY);
+        ctx.stroke();
+    }
+
+    function ellipse(x, y) {
+        ctx.beginPath();
+        ctx.ellipse(x, y, 3, 3, elRadius, elRadius, Math.PI * 2);
+        ctx.fill();
+    }
+
+    function drawLine1(fraction) {
+        const xFr = lerp(0, 0.38, fraction);
+        const yFr = lerp(0.6, 0.45, fraction);
+        ctx.fillStyle = 'rgb(255 255 255 / .5)';
+        ctx.strokeStyle = 'rgb(255 255 255 / .5)';
+        ellipse(xFr * width, yFr * height);
+    }
+
+    function drawLine2(fraction, hueRadius) {
+        const xFr = lerp(0.38, 0.005 + lerp(0.59, 0.65, hueRadius), fraction);
+        const yFr = lerp(0.45, lerp(0.40, 0.50, hueRadius), fraction);
+        const opacity = 50 * (1 - fraction) * Math.sqrt(1 - fraction) / 100
+        ctx.fillStyle = `rgb(255 255 255 / ${opacity})`;
+        ctx.strokeStyle = `rgb(255 255 255 / ${opacity})`;
+        ellipse(xFr * width, yFr * height);
+    }
+
+    function drawLine3(fraction, hueRadius) {
+        const xFr = lerp(0.005 + lerp(0.59, 0.65, hueRadius), 1, fraction);
+        const yFr = lerp(lerp(0.40, 0.50, hueRadius), lerp(0.45, 0.62, hueRadius), fraction);
+        const hue = `${lerp(0, 0.8, hueRadius)}turn`
+        ctx.fillStyle = `hsl(${hue} 100% 50% / 0.8)`;
+        ctx.strokeStyle = `hsl(${hue} 100% 50% / 0.8)`;
+        ellipse(xFr * width, yFr * height);
+    }
+
+    function drawTriangle() {
+        const y_up = height / 4;
+        const y_down = 3 * height / 4;
+        const x_mid = width / 2;
+        const x_left = 2 * width / 10;
+        const x_right = 8 * width / 10;
+
+        ctx.strokeStyle = 'rgb(255, 255, 255)';
+        ctx.lineWidth = 3;
+
+        line(x_left, y_down, x_mid, y_up);
+        line(x_mid, y_up, x_right, y_down);
+        line(x_right, y_down, x_left, y_down);
+    }
+
+    class Ray {
+        hueRadius = Math.random();
+        progress = 0;
+
+        move(delta) {
+            if (this.progress > 1) {
+                this.progress = 0;
+                this.hueRadius = Math.random();
+            } else {
+                this.progress += delta;
+            }
+        }
+
+        draw() {
+            if (this.progress <= 1 / 3) {
+                drawLine1(3 * this.progress)
+            } else if (this.progress <= 2 / 3) {
+                drawLine2(3 * (this.progress - 1 / 3), this.hueRadius)
+            } else {
+                drawLine3(3 * (this.progress - 2 / 3), this.hueRadius)
+            }
+        }
+    }
+
+    let lastFrameTime = 0
+
+    function draw(timestamp) {
+        const delta = (((timestamp - lastFrameTime) * 100) / cycleDuration) / 100
+        lastFrameTime = timestamp
+
+        // Apply the faded background
+        ctx.fillStyle = 'rgb(0 0 0 / 0.003)';
+        ctx.fillRect(0, 0, width, height);
+        drawTriangle();
+
+        // Anymate existing rays
+        for (let i = 0; i < rays.length; i++) {
+            rays[i].move(delta);
+            rays[i].draw();
+        }
+
+        // Randomly add new rays
+        if (rays.length < maxRays && Math.random() > 1 - raysFrequency) {
+            rays.push(new Ray());
+        }
+
+        window.requestAnimationFrame(draw)
+    }
+
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, width, height);
+    drawTriangle();
+
+    window.requestAnimationFrame(draw)
+</script>
+</body>
+</html>
