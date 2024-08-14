@@ -1,5 +1,6 @@
 import uuid
 
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -30,3 +31,12 @@ class Song(models.Model):
 
     def __str__(self):
         return "{id} [{mdbId}] {title}".format(id=self.id, mdbId=self.mdbId, title=self.title)
+
+
+class UserTrack(models.Model):
+    song_id = models.ForeignKey(Song, on_delete=models.RESTRICT)
+    user_id = models.ForeignKey(User, on_delete=models.RESTRICT)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return "{id} user: {user} - song: {song}".format(id=self.id, user=self.user_id, song=self.song_id)
