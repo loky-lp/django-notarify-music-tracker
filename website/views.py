@@ -5,15 +5,43 @@ from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseServer
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Artist, Album, Song
+from .models import Artist, Album, Song, UserTrack
 
 
 @login_required(login_url="/login")
 def index(request):
-    context = {'should_initialize': False}
-
     if Artist.objects.all().count() == 0:
-        context['should_initialize'] = True
+        context = {
+            'should_initialize': True,
+            'total_saves': 0,
+            'artists': [],
+        }
+        return render(request, "website/index.html", context)
+
+    artists = Artist.objects.prefetch_related('album_set')
+    context = {
+        'should_initialize': False,
+        'total_saves': UserTrack.objects.filter(user_id=request.user).count(),
+        'artists': [
+            {
+                'name': artist.name,
+                'albums': [
+                    {
+                        'title': album.title,
+                        'img_url': album.img_url
+                    } for album in artist.album_set.all()
+                ],
+            }
+            for artist in artists
+        ],
+    }
+
+    for artist in context['artists']:
+        print("Artist: %s" % artist['name'])
+        for album in artist['albums']:
+            print("\tAlbum: %s" % album['title'])
+    #         for song in album.song_set.all():
+    #             print("\t\tSong: %s" % song.title)
 
     return render(request, "website/index.html", context)
 
