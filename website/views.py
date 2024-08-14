@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login as django_login
+from django.contrib.auth import authenticate, login as django_login, logout as django_logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render, redirect
@@ -38,3 +38,16 @@ def signup(request):
         return redirect("website:index")
 
     return render(request, 'website/signup.html')
+
+
+@csrf_exempt
+def logout(request):
+    if not request.user.is_authenticated:
+        return redirect("website:index")
+
+    match request.method:
+        case "POST":
+            django_logout(request)
+            return redirect("website:index")
+        case _:
+            return HttpResponseNotAllowed(HttpResponse("Method not valid"))
