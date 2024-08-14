@@ -4,10 +4,26 @@ from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 
+from .models import Artist
+
 
 @login_required(login_url="/login")
 def index(request):
-    return render(request, "website/index.html")
+    context = {'should_initialize': False}
+
+    if Artist.objects.all().count() == 0:
+        context['should_initialize'] = True
+
+    return render(request, "website/index.html", context)
+
+
+@csrf_exempt
+def populate_db(request):
+    if Artist.objects.all().count() > 0:
+        return redirect("website:index")
+
+    # TODO Populate db
+    return redirect("website:index")
 
 
 @csrf_exempt  # DISABLED ONLY FOR DEMONSTRATION PURPOSES, in production environments the CSRF check MUST be activated

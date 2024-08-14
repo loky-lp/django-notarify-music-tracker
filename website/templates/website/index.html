@@ -18,6 +18,19 @@
     </form>
 </nav>
 
+{% if should_initialize %}
+    <div class="max-w-xl mx-auto flex flex-col items-center justify-center gap-2 py-20 px-10">
+        <h2 class="text-xl font-semibold text-center">Sembra che il database sia vuoto</h2>
+        <p class="text-center">
+            Clicca il bottone qui sotto per popolarlo prendendo i dati da <a
+                href="https://musicbrainz.org/">musicbrainz.org</a>
+        </p>
+        <form action="/populate_db/" method="post" class="mt-8">
+            <input type="submit" value="LET'S GOOOOO!!" class="btn btn-variant btn-size">
+        </form>
+    </div>
+{% else %}
 
+{% endif %}
 </body>
 </html>
