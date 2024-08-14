@@ -40,17 +40,19 @@
 {% endif %}
 
 <script>
-    const form = document.getElementById('populate-form')
-    const button = document.getElementById('populate-button')
-    const loader = document.getElementById('loader-circle')
+    {% if should_initialize %}
+        const form = document.getElementById('populate-form')
+        const button = document.getElementById('populate-button')
+        const loader = document.getElementById('loader-circle')
 
-    async function populateDb() {
-        button.disabled = true
-        loader.style.display = 'inline-block'
-        form.submit()
-    }
+        async function populateDb() {
+            button.disabled = true
+            loader.style.display = 'inline-block'
+            form.submit()
+        }
 
-    button.addEventListener('click', populateDb)
+        button.addEventListener('click', populateDb)
+    {% endif %}
 </script>
 </body>
 </html>
