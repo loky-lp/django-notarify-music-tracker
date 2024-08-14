@@ -141,5 +141,14 @@
         .btn-size-lg {
             @apply h-11 rounded-md px-8;
         }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
     }
 </style>
