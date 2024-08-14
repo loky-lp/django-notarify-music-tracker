@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 @login_required(login_url="/login")
 def index(request):
-    return HttpResponse("Hello, world. You're at the website index.")
+    return render(request, "website/index.html")
 
 
 @csrf_exempt  # DISABLED ONLY FOR DEMONSTRATION PURPOSES, in production environments the CSRF check MUST be activated
