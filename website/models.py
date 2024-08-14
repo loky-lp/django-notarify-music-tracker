@@ -7,7 +7,6 @@ from django.db import models
 class Artist(models.Model):
     mdbId = models.UUIDField(default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
-    img_url = models.CharField(max_length=200)
 
     def __str__(self):
         return "{id} [{mdbId}] {name}".format(id=self.id, mdbId=self.mdbId, name=self.name)
