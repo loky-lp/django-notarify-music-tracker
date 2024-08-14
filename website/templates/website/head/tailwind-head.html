@@ -1,0 +1,145 @@
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        theme: {
+            container: {
+                center: true,
+                padding: '2rem',
+                screens: {
+                    '2xl': '1400px',
+                },
+            },
+            extend: {
+                colors: {
+                    border: 'hsl(var(--border) / <alpha-value>)',
+                    input: 'hsl(var(--input) / <alpha-value>)',
+                    ring: 'hsl(var(--ring) / <alpha-value>)',
+                    background: 'hsl(var(--background) / <alpha-value>)',
+                    foreground: 'hsl(var(--foreground) / <alpha-value>)',
+                    primary: {
+                        DEFAULT: 'hsl(var(--primary) / <alpha-value>)',
+                        foreground: 'hsl(var(--primary-foreground) / <alpha-value>)',
+                    },
+                    secondary: {
+                        DEFAULT: 'hsl(var(--secondary) / <alpha-value>)',
+                        foreground: 'hsl(var(--secondary-foreground) / <alpha-value>)',
+                    },
+                    destructive: {
+                        DEFAULT: 'hsl(var(--destructive) / <alpha-value>)',
+                        foreground: 'hsl(var(--destructive-foreground) / <alpha-value>)',
+                    },
+                    muted: {
+                        DEFAULT: 'hsl(var(--muted) / <alpha-value>)',
+                        foreground: 'hsl(var(--muted-foreground) / <alpha-value>)',
+                    },
+                    accent: {
+                        DEFAULT: 'hsl(var(--accent) / <alpha-value>)',
+                        foreground: 'hsl(var(--accent-foreground) / <alpha-value>)',
+                    },
+                    popover: {
+                        DEFAULT: 'hsl(var(--popover) / <alpha-value>)',
+                        foreground: 'hsl(var(--popover-foreground) / <alpha-value>)',
+                    },
+                    card: {
+                        DEFAULT: 'hsl(var(--card) / <alpha-value>)',
+                        foreground: 'hsl(var(--card-foreground) / <alpha-value>)',
+                    },
+                },
+                borderRadius: {
+                    lg: 'var(--radius)',
+                    md: 'calc(var(--radius) - 2px)',
+                    sm: 'calc(var(--radius) - 4px)',
+                },
+            },
+        },
+    }
+</script>
+
+<style type="text/tailwindcss">
+    @layer base {
+        :root {
+            --background: 0 0% 100%;
+            --foreground: 0 0% 3.9%;
+
+            --muted: 0 0% 96.1%;
+            --muted-foreground: 0 0% 45.1%;
+
+            --popover: 0 0% 100%;
+            --popover-foreground: 0 0% 3.9%;
+
+            --card: 0 0% 100%;
+            --card-foreground: 0 0% 3.9%;
+
+            --border: 0 0% 89.8%;
+            --input: 0 0% 89.8%;
+
+            --primary: 0 0% 9%;
+            --primary-foreground: 0 0% 98%;
+
+            --secondary: 0 0% 96.1%;
+            --secondary-foreground: 0 0% 9%;
+
+            --accent: 0 0% 96.1%;
+            --accent-foreground: 0 0% 9%;
+
+            --destructive: 0 72.2% 50.6%;
+            --destructive-foreground: 0 0% 98%;
+
+            --ring: 0 0% 3.9%;
+
+            --radius: 0.5rem;
+        }
+    }
+
+    @layer base {
+        * {
+            @apply border-border;
+        }
+
+        body {
+            @apply bg-background text-foreground;
+        }
+    }
+
+    @layer components {
+        .btn {
+            @apply ring-offset-background focus-visible:ring-ring inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer;
+        }
+
+        .btn-variant {
+            @apply bg-primary text-primary-foreground hover:bg-primary/90;
+        }
+
+        .btn-variant-destructive {
+            @apply bg-destructive text-destructive-foreground hover:bg-destructive/90;
+        }
+
+        .btn-variant-outline {
+            @apply border-input bg-background hover:bg-accent hover:text-accent-foreground border;
+        }
+
+        .btn-variant-secondary {
+            @apply bg-secondary text-secondary-foreground hover:bg-secondary/80;
+        }
+
+        .btn-variant-ghost {
+            @apply hover:bg-accent hover:text-accent-foreground;
+        }
+
+        .btn-variant-link {
+            @apply text-primary underline-offset-4 hover:underline;
+        }
+
+        .btn-size {
+            @apply h-10 px-4 py-2;
+        }
+
+        .btn-size-sm {
+            @apply h-9 rounded-md px-3;
+        }
+
+        .btn-size-lg {
+            @apply h-11 rounded-md px-8;
+        }
+    }
+</style>
