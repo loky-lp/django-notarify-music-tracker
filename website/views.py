@@ -1,7 +1,9 @@
 import requests
 from django.contrib.auth import authenticate, login as django_login, logout as django_logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseServerError
+from django.db.models import Prefetch
+from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseServerError, JsonResponse, \
+    HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 
@@ -36,14 +38,83 @@ def index(request):
         ],
     }
 
-    for artist in context['artists']:
-        print("Artist: %s" % artist['name'])
-        for album in artist['albums']:
-            print("\tAlbum: %s" % album['title'])
-    #         for song in album.song_set.all():
-    #             print("\t\tSong: %s" % song.title)
-
     return render(request, "website/index.html", context)
+
+
+@login_required(login_url="/login")
+def artist_details(request, artist_id):
+    try:
+        artist = Artist.objects.prefetch_related(
+            Prefetch(
+                'album_set',
+                queryset=Album.objects.prefetch_related(
+                    Prefetch(
+                        'song_set',
+                        queryset=Song.objects.prefetch_related(
+                            Prefetch(
+                                'usertrack_set',
+                                queryset=UserTrack.objects.filter(user_id=request.user).all()
+                            )
+                        )
+                    )
+                )
+            )
+        ).get(id=artist_id)
+    except Artist.DoesNotExist:
+        return HttpResponseNotFound()
+
+    context = {
+        'name': artist.name,
+        'albums': [
+            {
+                'title': album.title,
+                'img_url': album.img_url,
+                'songs': [
+                    {
+                        'id': song.id,
+                        'title': song.title,
+                        # 'is_saved': UserTrack.objects.filter(song_id=song, user_id=request.user).count() > 0
+                        'is_saved': song.usertrack_set.filter(user_id=request.user).count() > 0
+                    } for song in album.song_set.all()
+                ]
+            } for album in artist.album_set.all()
+        ],
+    }
+
+    return render(request, "website/artist.html", context)
+
+
+@csrf_exempt
+@login_required(login_url="/login")
+def song_action(request, song_id):
+    print(request.method)
+
+    match request.method:
+        case "POST":
+            user = request.user
+            try:
+                song = Song.objects.get(id=song_id)
+            except Song.DoesNotExist:
+                return HttpResponseNotFound()
+
+            if UserTrack.objects.filter(song_id=song, user_id=user).count() is 0:
+                UserTrack.objects.create(song_id=song, user_id=user)
+
+            return JsonResponse({"success": True})
+        case "DELETE":
+            user = request.user
+            try:
+                song = Song.objects.get(id=song_id)
+            except Song.DoesNotExist:
+                return HttpResponseNotFound()
+
+            track = UserTrack.objects.filter(song_id=song, user_id=user)
+            if track.count() > 0:
+                track.delete()
+
+            return JsonResponse({"success": True})
+        case _:
+            return HttpResponseNotAllowed(HttpResponse("Method not valid"))
 
 
 @csrf_exempt
