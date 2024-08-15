@@ -7,16 +7,7 @@
 </head>
 <body>
 
-<nav class="w-full flex justify-between items-center border-b px-4 py-2 bg-muted/25">
-    <div class="">
-        <h1 class="text-xl">Good Old Days</h1>
-        <p class="text-sm text-foreground/60">Un semplicissimo music tracker (serve veramente a qualcosa?)</p>
-    </div>
-
-    <form action="/logout/" method="post">
-        <input type="submit" value="Esci" class="btn btn-variant-link btn-size">
-    </form>
-</nav>
+{% include 'website/components/header.html' %}
 
 {% if should_initialize %}
     <div class="max-w-xl mx-auto flex flex-col items-center justify-center gap-2 py-20 px-10">
