@@ -26,6 +26,7 @@ def index(request):
         'total_saves': UserTrack.objects.filter(user_id=request.user).count(),
         'artists': [
             {
+                'id': artist.id,
                 'name': artist.name,
                 'albums': [
                     {

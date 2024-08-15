@@ -38,15 +38,16 @@
         </h3>
         <div class="mt-4 flex flex-wrap gap-6 justify-center">
             {% for artist in artists %}
-                <div class="p-0 pb-4 rounded-lg border overflow-hidden">
-                    <div class="grid grid-cols-2">
-                        {% for album in artist.albums|slice:":4" %}
-                            <img src="{{ album.img_url }}" alt="{{ album.title }}" class="max-w-32">
-                        {% endfor %}
-                        {#                        <img src="{{ artist.album_set }}" alt="">#}
+                <a href="/artist/{{ artist.id }}">
+                    <div class="p-0 pb-4 rounded-lg border overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+                        <div class="grid grid-cols-2">
+                            {% for album in artist.albums|slice:":4" %}
+                                <img src="{{ album.img_url }}" alt="{{ album.title }}" class="max-w-32">
+                            {% endfor %}
+                        </div>
+                        <p class="mt-4 px-4 text-xl font-bold text-center">{{ artist.name }}</p>
                     </div>
-                    <p class="mt-4 px-4 text-xl font-bold text-center">{{ artist.name }}</p>
-                </div>
+                </a>
             {% endfor %}
         </div>
     </main>
